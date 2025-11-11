@@ -28,18 +28,33 @@ Team : Théo Pirouelle
 > | --- | --- |
 > | Python | 3.11 |
 > | ffmpeg_normalize | 1.36.0 |
+> | pytest | 8.4.2 |
+
+---
+
+## Build
+
+You can build the application using `PyInstaller`.
+
+```bash
+pip install pyinstaller
+
+pyinstaller --onefile --noconsole --icon="config\music.ico" --name "NormaliseMusicVolume" src/application.py
+```
 
 ---
 
 ## User manual
 
-### Linux
+### Lightweight script
+
+#### Linux
 
 ```bash
 > ./normalise.sh [path/to/repository]
 ```
 
-### PowerShell
+#### PowerShell
 
 ```powershell
 > ./normalise.ps1
@@ -50,6 +65,8 @@ options:
   -SourceDir PATH  Path to the directory to be processed
 ```
 
-### Python
+### Executable
 
-TODO
+Double-click on the executable or use `./application[.exe]` from the command line.
+
+<img src="docs/application.png" alt="application" />
