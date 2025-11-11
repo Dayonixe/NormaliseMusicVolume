@@ -24,7 +24,8 @@ Team : Théo Pirouelle
 > For information, the code has been developed and works on Python with the following library versions:
 > | Library | Version |
 > | --- | --- |
-> | ffmpeg | TODO |
+> | Python | 3.11 |
+> | ffmpeg_normalize | 1.36.0 |
 
 ---
 
