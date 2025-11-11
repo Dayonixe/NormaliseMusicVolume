@@ -1,5 +1,5 @@
 .idea/
-musique/
-musique_normalised/
+venv/
+.pytest_cache/
 src/__pycache__/
 tests/__pycache__/

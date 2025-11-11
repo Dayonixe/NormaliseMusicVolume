@@ -6,6 +6,8 @@ Team : Théo Pirouelle
   <img src="https://img.shields.io/badge/language-python-blue?style=flat-square" alt="laguage-python" />
 </a>
 
+![TestsResult](https://github.com/Dayonixe/NormaliseMusicVolume/actions/workflows/python-tests.yml/badge.svg)
+
 ---
 
 ## Installation

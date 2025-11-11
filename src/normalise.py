@@ -1,7 +1,7 @@
 import os
 from ffmpeg_normalize import FFmpegNormalize
 
-# --- Dictionnaire pour choisir le bon codec selon l'extension ---
+# Dictionary for choosing the right codec according to the extension
 CODEC_MAP = {
     ".mp3": "libmp3lame",
     ".flac": "flac",
@@ -11,6 +11,23 @@ CODEC_MAP = {
     ".ogg": "libvorbis"
 }
 
+def get_audio_files(input_dir):
+    """
+    Returns the list of supported audio files in the folder.
+    :param input_dir: Folder containing the files to be standardised
+    """
+    return [
+        f for f in os.listdir(input_dir)
+        if f.lower().endswith(tuple(CODEC_MAP.keys()))
+    ]
+
+def get_codec_for_extension(ext: str) -> str:
+    """
+    Returns the codec suitable for an extension (with fallback).
+    :param ext: File extension
+    """
+    ext = ext.lower()
+    return CODEC_MAP.get(ext, "libmp3lame")
 
 def normalize_directory(input_dir, output_dir=None, target_level=-16.0, progress_callback=None):
     """
@@ -31,10 +48,7 @@ def normalize_directory(input_dir, output_dir=None, target_level=-16.0, progress
     os.makedirs(output_dir, exist_ok=True)
 
     # List of audio files to be processed
-    files = [
-        f for f in os.listdir(input_dir)
-        if f.lower().endswith(tuple(CODEC_MAP.keys()))
-    ]
+    files = get_audio_files(input_dir)
 
     total_files = len(files)
     if total_files == 0:
@@ -44,18 +58,18 @@ def normalize_directory(input_dir, output_dir=None, target_level=-16.0, progress
     # File normalisation
     print(f"Normalising {total_files} files...\n")
 
-    for index, f in enumerate(files, start=1):
-        input_path = os.path.join(input_dir, f)
-        output_path = os.path.join(output_dir, f)
+    for index, filename in enumerate(files, start=1):
+        input_path = os.path.join(input_dir, filename)
+        output_path = os.path.join(output_dir, filename)
 
-        ext = os.path.splitext(f)[1].lower()
-        codec = CODEC_MAP.get(ext, "libmp3lame")  # default value
+        _, ext = os.path.splitext(filename)
+        audio_codec = get_codec_for_extension(ext)
 
-        print(f"[{index}/{total_files}] {f} ...")
+        print(f"[{index}/{total_files}] {filename} ...")
 
         normalizer = FFmpegNormalize(
             target_level=target_level,
-            audio_codec=codec,
+            audio_codec=audio_codec,
             audio_bitrate="192k",
             progress=False
         )
