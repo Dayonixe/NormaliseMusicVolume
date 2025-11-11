@@ -1,1 +1,5 @@
 .idea/
+musique/
+musique_normalised/
+src/__pycache__/
+tests/__pycache__/

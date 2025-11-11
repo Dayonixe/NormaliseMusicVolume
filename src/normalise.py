@@ -1,22 +1,70 @@
 import os
 from ffmpeg_normalize import FFmpegNormalize
 
-input_dir = "../musique"
-output_dir = "../musique_normalisee"
-os.makedirs(output_dir, exist_ok=True)
+# --- Dictionnaire pour choisir le bon codec selon l'extension ---
+CODEC_MAP = {
+    ".mp3": "libmp3lame",
+    ".flac": "flac",
+    ".wav": "pcm_s16le",
+    ".m4a": "aac",
+    ".aac": "aac",
+    ".ogg": "libvorbis"
+}
 
-normalizer = FFmpegNormalize(
-    target_level=-16.0,
-    audio_codec="libmp3lame",   # important pour les MP3
-    audio_bitrate="192k",       # optionnel, mais conseillé
-    progress=True
-)
 
-for f in os.listdir(input_dir):
-    if f.lower().endswith(('.mp3', '.wav', '.flac')):
+def normalize_directory(input_dir, output_dir=None, target_level=-16.0, progress_callback=None):
+    """
+    Normalises the volume of all audio files in a directory.
+    :param input_dir: Folder containing the files to be standardised
+    :param output_dir: Output folder (created if it does not exist)
+    :param target_level: Normalisation level in LUFS (default -16)
+    :param progress_callback: Function called after each file processed (e.g. to update a progress bar)
+    """
+
+    # Check that the directory exists
+    if not os.path.isdir(input_dir):
+        raise FileNotFoundError(f"The folder '{input_dir}' does not exist.")
+
+    # If no output folder is specified, a folder named ‘_normalised’ is created
+    if output_dir is None:
+        output_dir = os.path.join(input_dir, "_normalised")
+    os.makedirs(output_dir, exist_ok=True)
+
+    # List of audio files to be processed
+    files = [
+        f for f in os.listdir(input_dir)
+        if f.lower().endswith(tuple(CODEC_MAP.keys()))
+    ]
+
+    total_files = len(files)
+    if total_files == 0:
+        print("No audio files found.")
+        return
+
+    # File normalisation
+    print(f"Normalising {total_files} files...\n")
+
+    for index, f in enumerate(files, start=1):
         input_path = os.path.join(input_dir, f)
         output_path = os.path.join(output_dir, f)
-        print(f"Normalisation de {f} ...")
-        normalizer.add_media_file(input_path, output_path)
 
-normalizer.run_normalization()
+        ext = os.path.splitext(f)[1].lower()
+        codec = CODEC_MAP.get(ext, "libmp3lame")  # default value
+
+        print(f"[{index}/{total_files}] {f} ...")
+
+        normalizer = FFmpegNormalize(
+            target_level=target_level,
+            audio_codec=codec,
+            audio_bitrate="192k",
+            progress=False
+        )
+
+        normalizer.add_media_file(input_path, output_path)
+        normalizer.run_normalization()
+
+        # Progress callback (for the graphical interface)
+        if progress_callback:
+            progress_callback(index, total_files)
+
+    print("\nNormalisation completed !")
