@@ -30,6 +30,20 @@ Team : Théo Pirouelle
 > | ffmpeg_normalize | 1.36.0 |
 > | pytest | 8.4.2 |
 
+To install FFmpeg, you can follow these steps:
+
+- On Windows 10/11:
+  - Open a command terminal (`Win+R`, then `cmd`)
+  - `winget install ffmpeg`
+- On Windows 7/8:
+  - Open a PowerShell command window (`Win+R`, then `powershell`)
+  - `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`
+  - `choco install ffmpeg`
+- On Linux:
+  - Open a command terminal
+  - `sudo apt update && sudo apt upgrade`
+  - `sudo apt install ffmpeg`
+
 ---
 
 ## Build
